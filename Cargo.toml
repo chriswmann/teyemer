@@ -2,6 +2,14 @@
 name = "teyemer"
 version = "0.2.0"
 edition = "2021"
+authors = ["Christopher Mann"]
+license = "MIT"
+description = "A timer to look away from the screen"
+readme = "README.md"
+homepage = "https://github.com/chriswmann/teymer"
+repository = "https://github.com/chriswmann/teymer"
+keywords = ["timer", "eyes", "health"]
+categories = ["command-line-utilities"]
 
 [dependencies]
 rodio = "0.17.3"
