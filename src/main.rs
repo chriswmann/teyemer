@@ -23,11 +23,11 @@ struct Args {
     rest_period: u64,
 
     /// Amplification of the first beep
-    #[clap(short, long, default_value = "0.1")]
+    #[clap(short, long, default_value = "0.06")]
     start_amplification: f32,
 
     /// Amplification of the second beep
-    #[clap(short, long, default_value = "0.08")]
+    #[clap(short, long, default_value = "0.04")]
     end_amplification: f32,
 }
 
