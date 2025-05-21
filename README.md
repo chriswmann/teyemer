@@ -1,4 +1,4 @@
-# Teymer
+# Teyemer
 
 Teymer provides timed beeps to remind you to look away from your screen.
 
