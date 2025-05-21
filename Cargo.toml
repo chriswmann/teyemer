@@ -1,16 +1,16 @@
 [package]
 name = "teyemer"
-version = "0.2.1"
+version = "0.2.2"
 edition = "2021"
 authors = ["Christopher Mann"]
 license = "MIT"
 description = "A timer to look away from the screen"
 readme = "README.md"
-homepage = "https://github.com/chriswmann/teymer"
-repository = "https://github.com/chriswmann/teymer"
+homepage = "https://github.com/chriswmann/teyemer"
+repository = "https://github.com/chriswmann/teyemer"
 keywords = ["timer", "eyes", "health"]
 categories = ["command-line-utilities"]
 
 [dependencies]
-rodio = "0.17.3"
+rodio = "0.20.1"
 clap = { version = "4.5.11", features = ["derive"] }
