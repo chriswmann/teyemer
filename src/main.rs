@@ -3,31 +3,31 @@ use std::{thread, time};
 use clap::Parser;
 
 use rodio::source::{SineWave, Source};
-use rodio::{OutputStream, Sink};
+use rodio::{OutputStreamBuilder, Sink};
 
 #[derive(Debug, Parser)]
 struct Args {
     /// Frequency of the first beep in Hz
-    #[clap(short, long, default_value = "880")]
+    #[clap(long, default_value = "880")]
     start_freq: f32,
     /// Frequency of the second beep in Hz
-    #[clap(short, long, default_value = "1318.51")]
+    #[clap(long, default_value = "1318.51")]
     end_freq: f32,
 
     /// Duration of the work period (between beeps) in seconds
-    #[clap(short, long, default_value = "1180")]
+    #[clap(long, default_value = "1180")]
     work_period: u64,
 
     /// Duration of the rest period in seconds
-    #[clap(short, long, default_value = "19")]
+    #[clap(long, default_value = "19")]
     rest_period: u64,
 
     /// Amplification of the first beep
-    #[clap(short, long, default_value = "0.06")]
+    #[clap(long, default_value = "0.06")]
     start_amplification: f32,
 
     /// Amplification of the second beep
-    #[clap(short, long, default_value = "0.04")]
+    #[clap(long, default_value = "0.04")]
     end_amplification: f32,
 }
 
@@ -35,8 +35,9 @@ struct Args {
 /// via cron or systemd. Hence it executes an endless loop.
 fn main() {
     let args = Args::parse();
-    let (_stream, stream_handle) = OutputStream::try_default().unwrap();
-    let sink = Sink::try_new(&stream_handle).unwrap();
+    let stream_handle =
+        OutputStreamBuilder::open_default_stream().expect("Should be able to open default stream");
+    let sink = Sink::connect_new(stream_handle.mixer());
 
     // Play the beeps in a continuous loop.
     loop {
