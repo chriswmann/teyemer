@@ -31,7 +31,7 @@ struct Args {
     end_amplification: f32,
 }
 
-/// Teymer is intended to be run in the background while you work, e.g.
+/// Teyemer is intended to be run in the background while you work, e.g.
 /// via cron or systemd. Hence it executes an endless loop.
 fn main() {
     let args = Args::parse();
