@@ -35,12 +35,14 @@ struct Args {
 /// via cron or systemd. Hence it executes an endless loop.
 fn main() {
     let args = Args::parse();
-    let stream_handle =
-        OutputStreamBuilder::open_default_stream().expect("Should be able to open default stream");
-    let sink = Sink::connect_new(stream_handle.mixer());
 
     // Play the beeps in a continuous loop.
     loop {
+        // Open the stream in the loop so that a transient loss of device doesn't result in
+        // permanent loss of audio. It is a small overhead over a 20-minute cycle.
+        let stream_handle = OutputStreamBuilder::open_default_stream()
+            .expect("Should be able to open default stream");
+        let sink = Sink::connect_new(stream_handle.mixer());
         thread::sleep(time::Duration::from_secs(args.work_period));
         let source = SineWave::new(args.start_freq)
             .take_duration(time::Duration::from_secs_f32(0.5))
