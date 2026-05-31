@@ -15,4 +15,4 @@ categories = ["command-line-utilities"]
 rodio = "0.22.2"
 clap = { version = "4.5.11", features = ["derive"] }
 tracing = "0.1.44"
-tracing-subscriber = "0.3.23"
+tracing-subscriber = { version = "0.3.23", features = ["env-filter"] }

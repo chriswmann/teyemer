@@ -3,7 +3,7 @@ use std::{thread, time};
 use clap::Parser;
 
 use rodio::source::{SineWave, Source};
-use rodio::{OutputStreamBuilder, Sink};
+use rodio::{DeviceSinkBuilder, Player};
 use tracing::debug;
 use tracing_subscriber::EnvFilter;
 
@@ -44,23 +44,29 @@ fn main() {
 
     // Play the beeps in a continuous loop.
     loop {
+        let work_period = args.work_period;
+        let rest_period = args.rest_period;
+        let start_freq = args.start_freq;
+        let end_freq = args.end_freq;
+        let start_amplification = args.start_amplification;
+        let end_amplification = args.end_amplification;
         debug!("teyemer running; first beep in {work_period} seconds");
         // Open the stream in the loop so that a transient loss of device doesn't result in
         // permanent loss of audio. It is a small overhead over a 20-minute cycle.
-        let stream_handle = OutputStreamBuilder::open_default_stream()
-            .expect("Should be able to open default stream");
-        let sink = Sink::connect_new(stream_handle.mixer());
-        thread::sleep(time::Duration::from_secs(args.work_period));
-        let source = SineWave::new(args.start_freq)
-            .take_duration(time::Duration::from_secs_f32(0.5))
-            .amplify(args.start_amplification);
-        sink.append(source);
-        sink.sleep_until_end();
-        thread::sleep(time::Duration::from_secs(args.rest_period));
-        let source = SineWave::new(args.end_freq)
-            .take_duration(time::Duration::from_secs_f32(0.5))
-            .amplify(args.end_amplification);
-        sink.append(source);
-        sink.sleep_until_end();
+        let stream_handle =
+            DeviceSinkBuilder::open_default_sink().expect("Should be able to open default stream");
+        let player = Player::connect_new(stream_handle.mixer());
+        thread::sleep(time::Duration::from_secs(work_period));
+        beep(&player, start_freq, start_amplification);
+        thread::sleep(time::Duration::from_secs(rest_period));
+        beep(&player, end_freq, end_amplification);
     }
+}
+
+fn beep(player: &Player, freq: f32, amplification: f32) {
+    let source = SineWave::new(freq)
+        .take_duration(time::Duration::from_secs_f32(0.5))
+        .amplify(amplification);
+    player.append(source);
+    player.sleep_until_end();
 }
