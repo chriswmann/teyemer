@@ -4,6 +4,8 @@ use clap::Parser;
 
 use rodio::source::{SineWave, Source};
 use rodio::{OutputStreamBuilder, Sink};
+use tracing::debug;
+use tracing_subscriber::EnvFilter;
 
 #[derive(Debug, Parser)]
 struct Args {
@@ -36,8 +38,13 @@ struct Args {
 fn main() {
     let args = Args::parse();
 
+    tracing_subscriber::fmt()
+        .with_env_filter(EnvFilter::from_default_env())
+        .init();
+
     // Play the beeps in a continuous loop.
     loop {
+        debug!("teyemer running; first beep in {work_period} seconds");
         // Open the stream in the loop so that a transient loss of device doesn't result in
         // permanent loss of audio. It is a small overhead over a 20-minute cycle.
         let stream_handle = OutputStreamBuilder::open_default_stream()
